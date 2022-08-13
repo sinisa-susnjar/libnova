@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *   
+ *
  */
 
 /*------------------------------------------------------------------------*/
@@ -80,11 +80,11 @@ const char *ln_get_version(void)
 double ln_hms_to_deg(const struct ln_hms *hms)
 {
     double degrees;
-    
+
     degrees = ((double)hms->hours / 24.0) * 360.0;
     degrees += ((double)hms->minutes / 60.0) * 15.0;
     degrees += ((double)hms->seconds / 60.0) * 0.25;
-    
+
     return degrees;
 }
 
@@ -92,11 +92,11 @@ double ln_hms_to_deg(const struct ln_hms *hms)
 double ln_hms_to_rad(const struct ln_hms *hms)
 {
     double radians;
-  
+
     radians = ((double)hms->hours / 24.0) * 2.0 * M_PI;
     radians += ((double)hms->minutes / 60.0) * 2.0 * M_PI / 24.0;
     radians += ((double)hms->seconds / 60.0) * 2.0 * M_PI / 1440.0;
-    
+
     return radians;
 }
 
@@ -105,20 +105,20 @@ double ln_hms_to_rad(const struct ln_hms *hms)
 void ln_deg_to_hms (double degrees, struct ln_hms *hms)
 {
     double dtemp;
-        
-    degrees = ln_range_degrees(degrees);	
-    
+
+    degrees = ln_range_degrees(degrees);
+
 	/* divide degrees by 15 to get the hours */
     dtemp = degrees / 15.0;
     hms->hours = (unsigned short)dtemp;
-    
+
     /* multiply remainder by 60 to get minutes */
     dtemp = 60.0 * (dtemp - hms->hours);
     hms->minutes = (unsigned short)dtemp;
-    
+
     /* multiply remainder by 60 to get seconds */
     hms->seconds = 60.0 * (dtemp - hms->minutes);
-    
+
     /* catch any overflows */
     if (hms->seconds > 59) {
     	hms->seconds = 0.0;
@@ -134,10 +134,10 @@ void ln_deg_to_hms (double degrees, struct ln_hms *hms)
 void ln_rad_to_hms (double radians, struct ln_hms *hms)
 {
     double degrees;
-         
+
     radians = ln_range_radians(radians);
     degrees = ln_rad_to_deg(radians);
-  
+
     ln_deg_to_hms(degrees, hms);
 }
 
@@ -146,11 +146,11 @@ void ln_rad_to_hms (double radians, struct ln_hms *hms)
 double ln_dms_to_deg(const struct ln_dms *dms)
 {
     double degrees;
-    
+
     degrees =  fabs((double)dms->degrees);
     degrees += fabs((double)dms->minutes / 60.0);
     degrees += fabs((double)dms->seconds / 3600.0);
-	
+
 	// negative ?
 	if (dms->neg)
 		degrees *= -1.0;
@@ -162,15 +162,15 @@ double ln_dms_to_deg(const struct ln_dms *dms)
 double ln_dms_to_rad(const struct ln_dms *dms)
 {
     double radians;
- 
+
     radians =  fabs((double)dms->degrees / 360.0 * 2.0 * M_PI);
     radians += fabs((double)dms->minutes / 21600.0 * 2.0 * M_PI);
     radians += fabs((double)dms->seconds / 1296000.0 * 2.0 * M_PI);
-	
+
 	// negative ?
 	if (dms->neg)
 		radians *= -1.0;
-	
+
     return radians;
 }
 
@@ -186,14 +186,14 @@ void ln_deg_to_dms (double degrees, struct ln_dms *dms)
 
 	degrees = fabs(degrees);
 	dms->degrees = (int)degrees;
-	
+
     /* multiply remainder by 60 to get minutes */
     dtemp = 60.0 * (degrees - dms->degrees);
     dms->minutes = (unsigned short)dtemp;
-    
+
     /* multiply remainder by 60 to get seconds */
     dms->seconds = 60.0 * (dtemp - dms->minutes);
-    
+
     /* catch any overflows */
     if (dms->seconds > 59) {
     	dms->seconds = 0.0;
@@ -209,7 +209,7 @@ void ln_deg_to_dms (double degrees, struct ln_dms *dms)
 void ln_rad_to_dms (double radians, struct ln_dms *dms)
 {
     double degrees = ln_rad_to_deg(radians);
-    
+
     ln_deg_to_dms(degrees, dms);
 }
 
@@ -218,15 +218,15 @@ void ln_rad_to_dms (double radians, struct ln_dms *dms)
 double ln_range_degrees(double angle)
 {
     double temp;
-    
+
     if (angle >= 0.0 && angle < 360.0)
-    	return angle;
- 
-	temp = (int)(angle / 360);
-	if (angle < 0.0)
-	   	temp --;
+        return angle;
+
+    temp = (int)(angle / 360);
+    if (angle < 0.0)
+        temp --;
     temp *= 360.0;
-	return angle - temp;
+    return angle - temp;
 }
 
 /* puts a large angle in the correct range 0 - 2PI radians */
@@ -235,14 +235,14 @@ double ln_range_radians(double angle)
     double temp;
 
     if (angle >= 0.0 && angle < (2.0 * M_PI))
-    	return angle;
-    
-	temp = (int)(angle / (M_PI * 2.0));
+        return angle;
 
-	if (angle < 0.0)
-		temp --;
-	temp *= (M_PI * 2.0);
-	return angle - temp;
+    temp = (int)(angle / (M_PI * 2.0));
+
+    if (angle < 0.0)
+        temp --;
+    temp *= (M_PI * 2.0);
+    return angle - temp;
 }
 
 /* puts a large angle in the correct range -2PI - 2PI radians */
@@ -250,13 +250,13 @@ double ln_range_radians(double angle)
 double ln_range_radians2(double angle)
 {
     double temp;
-    
+
     if (angle > (-2.0 * M_PI) && angle < (2.0 * M_PI))
-    	return angle;
-    
-	temp = (int)(angle / (M_PI * 2.0));
-	temp *= (M_PI * 2.0);
-	return angle - temp;
+        return angle;
+
+    temp = (int)(angle / (M_PI * 2.0));
+    temp *= (M_PI * 2.0);
+    return angle - temp;
 }
 
 
@@ -264,14 +264,14 @@ double ln_range_radians2(double angle)
 void ln_add_secs_hms(struct ln_hms *hms, double seconds)
 {
     struct ln_hms source_hms;
-    
+
     /* breaks double seconds int hms */
     source_hms.hours = (unsigned short)(seconds / 3600);
     seconds -= source_hms.hours * 3600;
     source_hms.minutes = (unsigned short)(seconds / 60);
-    seconds -= source_hms.minutes * 60; 
+    seconds -= source_hms.minutes * 60;
     source_hms.seconds = seconds;
-    
+
     /* add hms to hms */
     ln_add_hms(&source_hms, hms);
 }
@@ -292,7 +292,7 @@ void ln_add_hms(const struct ln_hms *source, struct ln_hms *dest)
 		    dest->seconds += 60.0;
 		}
 	}
-	
+
     dest->minutes += source->minutes;
     if (dest->minutes >= 60) {
         /* carry */
@@ -305,7 +305,7 @@ void ln_add_hms(const struct ln_hms *source, struct ln_hms *dest)
 		    dest->minutes += 60;
 		}
 	}
-    
+
     dest->hours += source->hours;
 }
 
@@ -318,7 +318,7 @@ void ln_hequ_to_equ(const struct lnh_equ_posn *hpos, struct ln_equ_posn *pos)
 	pos->ra = ln_hms_to_deg(&hpos->ra);
 	pos->dec = ln_dms_to_deg(&hpos->dec);
 }
-	
+
 /*! \fn void ln_equ_to_hequ(struct ln_equ_posn *pos, struct lnh_equ_posn *hpos)
 * \brief human double equatorial position to human readable equatorial position
 * \ingroup conversion
@@ -328,7 +328,7 @@ void ln_equ_to_hequ(const struct ln_equ_posn *pos, struct lnh_equ_posn *hpos)
 	ln_deg_to_hms(pos->ra, &hpos->ra);
 	ln_deg_to_dms(pos->dec, &hpos->dec);
 }
-	
+
 /*! \fn void ln_hhrz_to_hrz(struct lnh_hrz_posn *hpos, struct ln_hrz_posn *pos)
 * \brief human readable horizontal position to double horizontal position
 * \ingroup conversion
@@ -352,7 +352,7 @@ void ln_hrz_to_hhrz(const struct ln_hrz_posn *pos, struct lnh_hrz_posn *hpos)
 /*! \fn const char * ln_hrz_to_nswe(struct ln_hrz_posn *pos);
  * \brief returns direction of given azimuth - like N,S,W,E,NSW,...
  * \ingroup conversion
- */ 
+ */
 const char *ln_hrz_to_nswe(const struct ln_hrz_posn *pos)
 {
 	const char *directions[] =
@@ -361,7 +361,7 @@ const char *ln_hrz_to_nswe(const struct ln_hrz_posn *pos)
 
 	return directions[(int)(pos->az / 22.5)];
 }
-	
+
 /*! \fn void ln_hlnlat_to_lnlat(struct lnh_lnlat_posn *hpos, struct ln_lnlat_posn *pos)
 * \brief human readable long/lat position to double long/lat position
 * \ingroup conversion
@@ -371,7 +371,7 @@ void ln_hlnlat_to_lnlat(const struct lnh_lnlat_posn *hpos, struct ln_lnlat_posn 
 	pos->lng = ln_dms_to_deg(&hpos->lng);
 	pos->lat = ln_dms_to_deg(&hpos->lat);
 }
-	
+
 /*! \fn void ln_lnlat_to_hlnlat(struct ln_lnlat_posn *pos, struct lnh_lnlat_posn *hpos)
 * \brief double long/lat position to human readable long/lat position
 * \ingroup conversion
@@ -397,11 +397,11 @@ double ln_get_rect_distance(const struct ln_rect_posn *a, const struct ln_rect_p
 	x = a->X - b->X;
 	y = a->Y - b->Y;
 	z = a->Z - b->Z;
-	
+
 	x *= x;
 	y *= y;
 	z *= z;
-	
+
 	return sqrt(x + y + z);
 }
 
@@ -439,7 +439,7 @@ static char *trim(char *x)
     if(!x)
         return(x);
     y = x + strlen(x)-1;
-    while (y >= x && isspace(*y)) 
+    while (y >= x && isspace(*y))
         *y-- = 0; /* skip white space */
     return x;
 }
@@ -466,24 +466,24 @@ static void skipwhite(char **s)
 *
 * Obtains Latitude, Longitude, RA or Declination from a string.
 *
-*  If the last char is N/S doesn't accept more than 90 degrees.  
-*  If it is E/W doesn't accept more than 180 degrees.  
-*  If they are hours don't accept more than 24:00  
-*                                                                          
-*  Any position can be expressed as follows: 
-*  (please use a 8 bits charset if you want 
-*  to view the degrees separator char '0xba') 
+*  If the last char is N/S doesn't accept more than 90 degrees.
+*  If it is E/W doesn't accept more than 180 degrees.
+*  If they are hours don't accept more than 24:00
 *
-*  42.30.35,53  
-*  90º0'0,01 W  
-*  42º30'35.53 N  
-*  42º30'35.53S  
-*  42º30'N  
-*  -42.30.35.53  
-*   42:30:35.53 S  
-*  +42.30.35.53  
-*  +42º30 35,53  
-*   23h36'45,0  
+*  Any position can be expressed as follows:
+*  (please use a 8 bits charset if you want
+*  to view the degrees separator char '0xba')
+*
+*  42.30.35,53
+*  90º0'0,01 W
+*  42º30'35.53 N
+*  42º30'35.53S
+*  42º30'N
+*  -42.30.35.53
+*   42:30:35.53 S
+*  +42.30.35.53
+*  +42º30 35,53
+*   23h36'45,0
 *
 *
 *  42:30:35.53 S = -42º30'35.53"
@@ -508,21 +508,21 @@ double ln_get_dec_location(const char *s)
 
 	if (s == NULL || !*s)
 	return -0.0;
-	
+
 	count = strlen(s) + 1;
 	if ((ptr = (char *) alloca(count)) == NULL)
 	return -0.0;
-	
+
 	memcpy(ptr, s, count);
 	trim(ptr);
 	skipwhite(&ptr);
 	if (*ptr == '+' || *ptr == '-')
 	negative = (char) (*ptr++ == '-' ? TRUE : negative);
-	
+
 	/* the last letter has precedence over the sign */
-	if (strpbrk(ptr,"SsWw") != NULL) 
+	if (strpbrk(ptr,"SsWw") != NULL)
 	negative = TRUE;
-	
+
 	skipwhite(&ptr);
 	if ((hh = strpbrk(ptr,"Hh")) != NULL && hh < ptr + 3) {
 	type = HOURS;
@@ -571,7 +571,7 @@ double ln_get_dec_location(const char *s)
 }
 
 
-/*! \fn const char * ln_get_humanr_location(double location)    
+/*! \fn const char * ln_get_humanr_location(double location)
 * \param location Location angle in degress
 * \return Angle string
 *
@@ -593,15 +593,15 @@ const char *ln_get_humanr_location(double location)
 double ln_interpolate3(double n, double y1, double y2, double y3)
 {
 	double y, a, b, c;
-	
+
 	/* equ 3.2 */
 	a = y2 - y1;
 	b = y3 - y2;
 	c = b - a;
-	
+
 	/* equ 3.3 */
 	y = y2 + n / 2.0 * (a + b + n * c);
-	
+
 	return y;
 }
 
@@ -623,7 +623,7 @@ double ln_interpolate5(double n, double y1, double y2, double y3,
 {
 	double y, A, B, C, D, E, F, G, H, J, K;
 	double n2, n3, n4;
-	
+
 	/* equ 3.8 */
 	A = y2 - y1;
 	B = y3 - y2;
@@ -635,18 +635,18 @@ double ln_interpolate5(double n, double y1, double y2, double y3,
 	H = F - E;
 	J = G - F;
 	K = J - H;
-	
+
 	y = 0.0;
 	n2 = n* n;
 	n3 = n2 * n;
 	n4 = n3 * n;
-	
+
 	y += y3;
 	y += n * ((B + C ) / 2.0 - (H + J) / 12.0);
 	y += n2 * (F / 2.0 - K / 24.0);
 	y += n3 * ((H + J) / 12.0);
 	y += n4 * (K / 24.0);
-	
+
 	return y;
 }
 
@@ -747,7 +747,7 @@ struct tm *gmtime_r(time_t *t, struct tm *gmt)
     local_gmt = gmtime(t);
 
     if (local_gmt != 0)
-        memcpy(gmt, local_gmt, sizeof (gmt));
+        memcpy(gmt, local_gmt, sizeof (*gmt));
 #endif // !__MINGW__
 
 	return gmt;

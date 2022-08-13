@@ -12,8 +12,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *  
- *  Copyright (C) 2000 - 2005 Liam Girdwood  
+ *
+ *  Copyright (C) 2000 - 2005 Liam Girdwood
  */
 
 #include <math.h>
@@ -48,6 +48,14 @@
 #endif
 #endif // __cplusplus
 
+// #ifdef __MINGW__
+// #define cosl cos
+// #define sinl sin
+// #define acosl acos
+// #define asinl asin
+// #define atan2l atan2
+// #endif
+
 /*
 ** Precession
 */
@@ -57,18 +65,18 @@
 * \param JD Julian day
 * \param position Pointer to store new object position as of the given Julian day.
 *
-* Calculate equatorial coordinates with the effects of precession for a given Julian Day. 
+* Calculate equatorial coordinates with the effects of precession for a given Julian Day.
 * Uses mean equatorial coordinates and is
-* only for initial epoch J2000.0 
+* only for initial epoch J2000.0
 */
-/* Equ 20.3, 20.4 pg 126 
+/* Equ 20.3, 20.4 pg 126
 */
 void ln_get_equ_prec(const struct ln_equ_posn *mean_position, double JD,
 	struct ln_equ_posn *position)
 {
 	long double t, t2, t3, A, B, C, zeta, eta, theta,
 		ra, dec, mean_ra, mean_dec;
-	
+
 	/* change original ra and dec to radians */
 	mean_ra = ln_deg_to_rad(mean_position->ra);
 	mean_dec = ln_deg_to_rad(mean_position->dec);
@@ -83,7 +91,7 @@ void ln_get_equ_prec(const struct ln_equ_posn *mean_position, double JD,
 	theta = 2004.3109 * t - 0.42665 * t2 - 0.041833 * t3;
 	zeta = ln_deg_to_rad(zeta);
 	eta = ln_deg_to_rad(eta);
-	theta = ln_deg_to_rad(theta); 
+	theta = ln_deg_to_rad(theta);
 
 	/* calc A,B,C equ 20.4 */
 	A = cosl(mean_dec) * sinl(mean_ra + zeta);
@@ -91,9 +99,9 @@ void ln_get_equ_prec(const struct ln_equ_posn *mean_position, double JD,
 			cosl(mean_ra + zeta) - sinl(theta) * sinl(mean_dec);
 	C = sinl (theta) * cosl (mean_dec) *
 			cosl(mean_ra + zeta) + cosl(theta) * sinl(mean_dec);
-	
+
 	ra = atan2l(A, B) + eta;
-	
+
 	/* check for object near celestial pole */
 	if (mean_dec > (0.4 * M_PI) || mean_dec < (-0.4 * M_PI)) {
 		/* close to pole */
@@ -127,7 +135,7 @@ void ln_get_equ_prec2(const struct ln_equ_posn *mean_position, double fromJD,
 {
 	long double t, t2, t3, A, B, C, zeta, eta, theta, ra, dec, mean_ra,
 		mean_dec, T, T2;
-	
+
 	/* change original ra and dec to radians */
 	mean_ra = ln_deg_to_rad(mean_position->ra);
 	mean_dec = ln_deg_to_rad(mean_position->dec);
@@ -148,7 +156,7 @@ void ln_get_equ_prec2(const struct ln_equ_posn *mean_position, double fromJD,
 		t - (0.42665 + 0.000217 * T) * t2 - 0.041833 * t3;
 	zeta = ln_deg_to_rad(zeta);
 	eta = ln_deg_to_rad(eta);
-	theta = ln_deg_to_rad(theta); 
+	theta = ln_deg_to_rad(theta);
 
 	/* calc A,B,C equ 20.4 */
 	A = cosl(mean_dec) * sinl(mean_ra + zeta);
@@ -156,9 +164,9 @@ void ln_get_equ_prec2(const struct ln_equ_posn *mean_position, double fromJD,
 			sinl(theta) * sinl(mean_dec);
 	C = sinl(theta) * cosl(mean_dec) * cosl(mean_ra + zeta) +
 			cosl(theta) * sinl(mean_dec);
-	
+
 	ra = atan2l(A, B) + eta;
-	
+
 	/* check for object near celestial pole */
 	if (mean_dec > (0.4 * M_PI) || mean_dec < (-0.4 * M_PI)) {
 		/* close to pole */
@@ -180,10 +188,10 @@ void ln_get_equ_prec2(const struct ln_equ_posn *mean_position, double fromJD,
 * \param JD Julian day
 * \param position Pointer to store new object position.
 *
-* Calculate ecliptical coordinates with the effects of precession for a given Julian Day. 
+* Calculate ecliptical coordinates with the effects of precession for a given Julian Day.
 * Uses mean ecliptical coordinates and is
-* only for initial epoch J2000.0  
-* \todo To be implemented. 
+* only for initial epoch J2000.0
+* \todo To be implemented.
 */
 /* Equ 20.5, 20.6 pg 128
 */

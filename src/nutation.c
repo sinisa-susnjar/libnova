@@ -12,17 +12,32 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *  
+ *
  *  Copyright (C) 2000 - 2005 Liam Girdwood <lgirdwood@gmail.com>
  */
 
 #include <math.h>
+#include <stdlib.h>
 #include <libnova/nutation.h>
 #include <libnova/dynamical_time.h>
 #include <libnova/utility.h>
 
 #define TERMS 63
 #define LN_NUTATION_EPOCH_THRESHOLD 0.1
+
+void __mingw_raise_matherr (int typ, const char *name, double a1, double a2, double rslt)
+{
+    abort();
+}
+
+
+// #ifdef __MINGW__
+// #define cosl cos
+// #define sinl sin
+// #define acosl acos
+// #define asinl asin
+// #define atan2l atan2
+// #endif
 
 struct nutation_arguments {
     double D;
@@ -175,20 +190,20 @@ const static struct nutation_coefficients coefficients[TERMS] = {
 static long double c_JD = 0.0, c_longitude = 0.0, c_obliquity = 0.0,
 	c_ecliptic = 0.0;
 
-	
+
 /*! \fn void ln_get_nutation(double JD, struct ln_nutation *nutation)
 * \param JD Julian Day.
 * \param nutation Pointer to store nutation
 *
-* Calculate nutation of longitude and obliquity in degrees from Julian Ephemeris Day 
+* Calculate nutation of longitude and obliquity in degrees from Julian Ephemeris Day
 */
-/* Chapter 21 pg 131-134 Using Table 21A 
+/* Chapter 21 pg 131-134 Using Table 21A
 */
 /* TODO: add argument to specify this */
 /* TODO: use JD or JDE. confirm */
 void ln_get_nutation(double JD, struct ln_nutation *nutation)
 {
-	
+
 	long double D, M, MM, F, O, T, T2, T3, JDE;
 	long double coeff_sine, coeff_cos;
 	long double argument;
@@ -203,7 +218,7 @@ void ln_get_nutation(double JD, struct ln_nutation *nutation)
 
 		/* get julian ephemeris day */
 		JDE = (long double)ln_get_jde(JD);
-		
+
 		/* calc T */
 		T = (JDE - 2451545.0) / 36525.0;
 		T2 = T * T;
@@ -231,12 +246,12 @@ void ln_get_nutation(double JD, struct ln_nutation *nutation)
 			coeff_cos = (coefficients[i].obliquity1 +
 				(coefficients[i].obliquity2 * T));
 
-			argument = arguments[i].D * D 
-				+ arguments[i].M * M 
-				+ arguments[i].MM * MM 
+			argument = arguments[i].D * D
+				+ arguments[i].M * M
+				+ arguments[i].MM * MM
 				+ arguments[i].F * F
 				+ arguments[i].O * O;
-            
+
 			c_longitude += coeff_sine * sinl(argument);
 			c_obliquity += coeff_cos * cosl(argument);
 		}
@@ -248,14 +263,14 @@ void ln_get_nutation(double JD, struct ln_nutation *nutation)
 		/* change to degrees */
 		c_longitude /= (60.0 * 60.0);
 		c_obliquity /= (60.0 * 60.0);
-		
+
 		/* calculate mean ecliptic - Meeus 2nd edition, eq. 22.2 */
 		c_ecliptic = 23.0 + 26.0 / 60.0 + 21.448 / 3600.0
                    - 46.8150 / 3600.0 * T
                    - 0.00059 / 3600.0 * T2
                    + 0.001813 / 3600.0 * T3;
 
-		/* c_ecliptic += c_obliquity; * Uncomment this if function should 
+		/* c_ecliptic += c_obliquity; * Uncomment this if function should
                                          return true obliquity rather than
                                          mean obliquity */
 	}

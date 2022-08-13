@@ -25,7 +25,7 @@ endif(WIN32)
 # add more optimization flags to the visual studio release compilation
 if(MSVC)
     set(CMAKE_CXX_FLAGS_RELEASE "/MD /Ox /Ob2 /D NDEBUG")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:SSE2 /GS-")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:SSE2 /GS- /TC")
 endif(MSVC)
 
 

@@ -12,8 +12,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *  
- *  Copyright (C) 2000 - 2005 Liam Girdwood  
+ *
+ *  Copyright (C) 2000 - 2005 Liam Girdwood
  */
 
 #ifndef _LN_TYPES_H
@@ -65,7 +65,7 @@ extern "C" {
 
 #define B1900           2415020.3135
 #define B1950           2433282.4235
-	
+
 /*!
 ** Date
 * \struct ln_date
@@ -155,7 +155,7 @@ struct lnh_hrz_posn {
 
 /*! \struct lnh_lnlat_posn
 ** \brief Ecliptical (or celestial) Latitude and Longitude.
-* 
+*
 * Human readable Ecliptical (or celestial) Longitude and Latitude.
 */
 
@@ -208,10 +208,10 @@ struct ln_lnlat_posn {
 
 
 /*! \struct ln_helio_posn
-* \brief Heliocentric position 
+* \brief Heliocentric position
 *
 * A heliocentric position is an objects position relative to the
-* centre of the Sun. 
+* centre of the Sun.
 *
 * Angles are expressed in degrees.
 * Radius vector is in AU.
@@ -229,7 +229,7 @@ struct ln_helio_posn {
 * geocentric or heliocentric.
 *
 * A heliocentric position is an objects position relative to the
-* centre of the Sun. 
+* centre of the Sun.
 * A geocentric position is an objects position relative to the centre
 * of the Earth.
 *
@@ -309,10 +309,10 @@ struct ln_hyp_orbit {
 
 /*!
 * \struct ln_rst_time
-* \brief Rise, Set and Transit times. 
+* \brief Rise, Set and Transit times.
 *
 * Contains the Rise, Set and transit times for a body.
-*  
+*
 * Angles are expressed in degrees.
 */
 struct ln_rst_time {
@@ -323,9 +323,9 @@ struct ln_rst_time {
 
 /*!
 * \struct ln_nutation
-* \brief Nutation in longitude, ecliptic and obliquity. 
+* \brief Nutation in longitude, ecliptic and obliquity.
 *
-* Contains Nutation in longitude, obliquity and ecliptic obliquity. 
+* Contains Nutation in longitude, obliquity and ecliptic obliquity.
 *
 * Angles are expressed in degrees.
 */
@@ -337,15 +337,17 @@ struct ln_nutation {
 
 #if defined(__WIN32__) && !defined(__MINGW__)
 
+#error "Oopsala!"
+
 #include <time.h>
 
-struct timeval
+struct timeval_x
 {
 	time_t  tv_sec;         /* count of seconds since Jan. 1, 1970 */
 	long    tv_usec;        /* and microseconds */
 };
 
-struct timezone
+struct timezone_x
 {
 	int     tz_minuteswest; /* Minutes west of GMT */
 	int     tz_dsttime;     /* DST correction offset */

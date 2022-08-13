@@ -12,13 +12,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *  
+ *
  *  Copyright (C) 2000 - 2005 Liam Girdwood <lgirdwood@gmail.com>
  */
 
-#if defined(__MINGW__) || defined(__MINGW32__) || defined(__MINGW64__)
-#define _USE_32BIT_TIME_T
-#endif	//__MINGW__
+// #if defined(__MINGW__) || defined(__MINGW32__) || defined(__MINGW64__)
+// #define _USE_32BIT_TIME_T
+// #endif	//__MINGW__
 
 #include <time.h>
 #include <string.h>
@@ -37,10 +37,10 @@
 * \param date Date required.
 * \return Julian day
 *
-* Calculate the julian day from a calendar day. 
+* Calculate the julian day from a calendar day.
 * Valid for positive and negative years but not for negative JD.
 */
-/* Formula 7.1 on pg 61 
+/* Formula 7.1 on pg 61
 */
 double ln_get_julian_day(const struct ln_date *date)
 {
@@ -48,39 +48,39 @@ double ln_get_julian_day(const struct ln_date *date)
     double days;
     int a,b;
     struct ln_date local_date;
-		
+
 	/* create local copy */
     memcpy(&local_date, date, sizeof(struct ln_date));
-		
+
     /* check for month = January or February */
     if (local_date.months < 3 ) {
         local_date.years--;
 	    local_date.months += 12;
 	}
-	
+
 	a = local_date.years / 100;
-	
+
 	/* check for Julian or Gregorian calendar (starts Oct 4th 1582) */
-	if (local_date.years > 1582 || 
-		(local_date.years == 1582 && 
-		(local_date.months > 10 || 
+	if (local_date.years > 1582 ||
+		(local_date.years == 1582 &&
+		(local_date.months > 10 ||
 		(local_date.months == 10 && local_date.days >= 4)))) {
-	    /* Gregorian calendar */    
+	    /* Gregorian calendar */
 	    b = 2 - a + (a / 4);
 	} else {
 	    /* Julian calendar */
 	    b = 0;
 	}
-	
+
 	/* add a fraction of hours, minutes and secs to days*/
 	days = local_date.days + (double)(local_date.hours / 24.0) +
 		(double)(local_date.minutes / 1440.0) +
 		(double)(local_date.seconds /  86400.0);
 
 	/* now get the JD */
-	JD = (int)(365.25 * (local_date.years + 4716)) + 
+	JD = (int)(365.25 * (local_date.years + 4716)) +
 	    (int)(30.6001 * (local_date.months + 1)) + days + b - 1524.5;
-	
+
 	return JD;
 }
 
@@ -89,71 +89,71 @@ double ln_get_julian_day(const struct ln_date *date)
 * \param date Date required
 * \return Day of the week
 *
-* Calculate the day of the week. 
+* Calculate the day of the week.
 * Returns 0 = Sunday .. 6 = Saturday
 */
 unsigned int ln_get_day_of_week(const struct ln_date *date)
 {
     unsigned int day;
     double JD;
-    
+
     /* get julian day */
     JD = ln_get_julian_day (date);
     JD += 1.5;
-    day = (int)JD % 7; 
-    
+    day = (int)JD % 7;
+
     return day;
-}	
+}
 
 /*! \fn void ln_get_date(double JD, struct ln_date *date)
 * \param JD Julian day
 * \param date Pointer to new calendar date.
 *
-* Calculate the date from the Julian day  
+* Calculate the date from the Julian day
 */
 void ln_get_date(double JD, struct ln_date *date)
 {
    int A, a, B, C, D, E;
    double F, Z;
-   
+
    JD += 0.5;
    Z = (int) JD;
    F = JD - Z;
-   
+
    if (Z < 2299161)
        A = (int) Z;
    else {
        a = (int)((Z - 1867216.25) / 36524.25);
        A = (int)(Z + 1 + a - (int)(a / 4));
    }
-   
+
    B = A + 1524;
    C = (int) ((B - 122.1) / 365.25);
    D = (int) (365.25 * C);
    E = (int) ((B - D) / 30.6001);
-   
+
    /* get the hms */
    date->hours = (int)(F * 24);
    F -= (double)date->hours / 24;
    date->minutes = (int)(F * 1440);
    F -= (double)date->minutes / 1440;
    date->seconds = F * 86400;
-   
+
    /* get the day */
    date->days = B - D - (int)(30.6001 * E);
-   
+
    /* get the month */
    if (E < 14)
        date->months = E - 1;
    else
        date->months = E - 13;
-   
+
    /* get the year */
    if (date->months > 2)
        date->years = C - 4716;
    else
        date->years = C - 4715;
-}	
+}
 
 /*! \fn void ln_get_date_from_timet (time_t *t, struct ln_date *date)
 * \param t system time
@@ -167,7 +167,7 @@ void ln_get_date_from_timet (time_t *t, struct ln_date *date)
 
 	/* convert to UTC time representation */
 	gmtime_r(t, &gmt);
-    	
+
 	ln_get_date_from_tm(&gmt, date);
 }
 
@@ -193,6 +193,7 @@ void ln_get_date_from_tm(struct tm *t, struct ln_date *date)
 *
 * Calculate local date from system date.
 */
+#include <assert.h>
 void ln_get_date_from_sys(struct ln_date *date)
 {
 	struct tm * gmt;
@@ -202,9 +203,12 @@ void ln_get_date_from_sys(struct ln_date *date)
 	/* get current time with microseconds precission*/
 	gettimeofday(&tv, &tz);
 
+    static_assert(sizeof(time_t) == sizeof(long long), "time_t must be long long");
+    // static_assert(sizeof(time_t) == sizeof(tv.tv_sec), "tv.tv_sec must be time_t");
+
 	/* convert to UTC time representation */
 	gmt = gmtime(&tv.tv_sec);
-    	
+
 	/* fill in date struct */
 	date->seconds = gmt->tm_sec + ((double)tv.tv_usec / 1000000);
 	date->minutes = gmt->tm_min;
@@ -230,10 +234,12 @@ double ln_get_julian_from_timet(time_t * in_time)
 #ifndef HAVE_ROUND
 
 /* Simple round to nearest */
+/*
 static inline double round(double x)
 {
 	return floor(x + 0.5);
 }
+*/
 
 #endif /* ! HAVE_ROUND */
 
@@ -244,7 +250,7 @@ static inline double round(double x)
 * Calculate time_t from julian day
 */
 void ln_get_timet_from_julian(double JD, time_t * in_time)
-{	
+{
 	*in_time = (time_t)round((JD - (double) 2440587.5) * (double) 86400.0);
 }
 
@@ -257,7 +263,7 @@ double ln_get_julian_from_sys()
 {
 	double JD;
 	struct ln_date date;
-		
+
 	/* get sys date */
 	ln_get_date_from_sys(&date);
 	JD = ln_get_julian_day(&date);
@@ -274,7 +280,7 @@ double ln_get_julian_from_sys()
 double ln_get_julian_local_date(const struct ln_zonedate* zonedate)
 {
 	struct ln_date date;
-	
+
 	ln_zonedate_to_date(zonedate, &date);
 
 	return ln_get_julian_day(&date);
@@ -284,16 +290,16 @@ double ln_get_julian_local_date(const struct ln_zonedate* zonedate)
 * \param JD Julian day
 * \param zonedate Pointer to new calendar date.
 *
-* Calculate the zone date from the Julian day (UT). Gets zone info from 
+* Calculate the zone date from the Julian day (UT). Gets zone info from
 * system using either _timezone or tm_gmtoff fields.
 */
 void ln_get_local_date(double JD, struct ln_zonedate *zonedate)
 {
 	struct ln_date date;
-#ifndef __WIN32__	
+#ifndef __WIN32__
 	time_t curtime;
 	struct tm *loctime;
-#endif	
+#endif
 	long gmtoff;
 
 	ln_get_date(JD, &date);
@@ -325,11 +331,11 @@ int ln_get_date_from_mpc(struct ln_date *date, const char *mpc_date)
 	char year[3];
 	char month[2];
 	char day[2];
-	
+
 	/* is mpc_date correct length */
 	if (strlen(mpc_date) != 5)
 		return -1;
-	
+
 	/* get the century */
 	switch (*mpc_date) {
 		case 'I':
@@ -344,23 +350,23 @@ int ln_get_date_from_mpc(struct ln_date *date, const char *mpc_date)
 		default:
 			return -1;
 	}
-	
+
 	/* get the year */
 	year[0] = *(mpc_date + 1);
 	year[1] = *(mpc_date + 2);
 	year[2] = 0;
 	date->years += strtol(year,0,10);
-	
+
 	/* month */
 	month[0] = *(mpc_date + 3);
 	month[1] = 0;
 	date->months = strtol(month, 0, 16);
-	
+
 	/* day */
 	day[0] = *(mpc_date + 4);
 	day[1] = 0;
 	date->days = strtol(day, 0, 31);
-	
+
 	/* reset hours,min,secs to 0 */
 	date->hours = 0;
 	date->minutes = 0;
@@ -379,10 +385,10 @@ double ln_get_julian_from_mpc(char *mpc_date)
 {
 	struct ln_date date;
 	double JD;
-	
-	ln_get_date_from_mpc(&date, mpc_date);	
+
+	ln_get_date_from_mpc(&date, mpc_date);
 	JD = ln_get_julian_day(&date);
-	
+
 	return JD;
 }
 
@@ -391,7 +397,7 @@ double ln_get_julian_from_mpc(char *mpc_date)
 * \param gmtoff Offset in seconds from UT
 * \param date Ptr to date
 *
-* Converts a ln_date (UT) to a ln_zonedate (local time). 
+* Converts a ln_date (UT) to a ln_zonedate (local time).
 */
 void ln_date_to_zonedate(struct ln_date *date,
 	struct ln_zonedate *zonedate, long gmtoff)
@@ -417,7 +423,7 @@ void ln_date_to_zonedate(struct ln_date *date,
 * \param zonedate Ptr to zonedate
 * \param date Ptr to date
 *
-* Converts a ln_zonedate (local time) to a ln_date (UT). 
+* Converts a ln_zonedate (local time) to a ln_date (UT).
 */
 void ln_zonedate_to_date(const struct ln_zonedate *zonedate, struct ln_date *date)
 {
