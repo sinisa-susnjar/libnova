@@ -23,7 +23,7 @@
 #define __WIN32__
 #define ALIGN32
 #else
-#define ALIGN32 __attribute__((aligned(32)))
+#define ALIGN32 // __attribute__((aligned(32)))
 #endif
 
 /* add a specific macro for mingw */

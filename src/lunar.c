@@ -29,7 +29,43 @@
 #include <libnova/rise_set.h>
 #include <libnova/utility.h>
 #include "lunar-priv.h"
-#include "elp/elp.h"
+
+#include "elp/elp1.c"
+#include "elp/elp2.c"
+#include "elp/elp3.c"
+#include "elp/elp4.c"
+#include "elp/elp5.c"
+#include "elp/elp6.c"
+#include "elp/elp7.c"
+#include "elp/elp8.c"
+#include "elp/elp9.c"
+#include "elp/elp10.c"
+#include "elp/elp11.c"
+#include "elp/elp12.c"
+#include "elp/elp13.c"
+#include "elp/elp14.c"
+#include "elp/elp15.c"
+#include "elp/elp16.c"
+#include "elp/elp17.c"
+#include "elp/elp18.c"
+#include "elp/elp19.c"
+#include "elp/elp20.c"
+#include "elp/elp21.c"
+#include "elp/elp22.c"
+#include "elp/elp23.c"
+#include "elp/elp24.c"
+#include "elp/elp25.c"
+#include "elp/elp26.c"
+#include "elp/elp27.c"
+#include "elp/elp28.c"
+#include "elp/elp29.c"
+#include "elp/elp30.c"
+#include "elp/elp31.c"
+#include "elp/elp32.c"
+#include "elp/elp33.c"
+#include "elp/elp34.c"
+#include "elp/elp35.c"
+#include "elp/elp36.c"
 
 #ifdef HAVE_LIBsunmath
 #include <sunmath.h>
@@ -37,6 +73,44 @@
 
 /* AU in KM */
 #define AU			149597870
+
+/* sequence sizes */
+#define ELP1_SIZE	1023		/* Main problem. Longitude periodic terms (sine) */
+#define ELP2_SIZE	918		/* Main problem. Latitude (sine) */
+#define ELP3_SIZE	704		/* Main problem. Distance (cosine) */
+#define ELP4_SIZE	347		/* Earth figure perturbations. Longitude */
+#define ELP5_SIZE	316		/* Earth figure perturbations. Latitude */
+#define ELP6_SIZE	237		/* Earth figure perturbations. Distance */
+#define ELP7_SIZE	14		/* Earth figure perturbations. Longitude/t */
+#define ELP8_SIZE	11		/* Earth figure perturbations. Latitude/t */
+#define ELP9_SIZE	8		/* Earth figure perturbations. Distance/t */
+#define ELP10_SIZE	14328		/* Planetary perturbations. Table 1 Longitude */
+#define ELP11_SIZE	5233		/* Planetary perturbations. Table 1 Latitude */
+#define ELP12_SIZE	6631		/* Planetary perturbations. Table 1 Distance */
+#define ELP13_SIZE	4384		/* Planetary perturbations. Table 1 Longitude/t */
+#define ELP14_SIZE	833		/* Planetary perturbations. Table 1 Latitude/t */
+#define ELP15_SIZE	1715		/* Planetary perturbations. Table 1 Distance/t */
+#define ELP16_SIZE	170		/* Planetary perturbations. Table 2 Longitude */
+#define ELP17_SIZE	150		/* Planetary perturbations. Table 2 Latitude */
+#define ELP18_SIZE	114		/* Planetary perturbations. Table 2 Distance */
+#define ELP19_SIZE	226		/* Planetary perturbations. Table 2 Longitude/t */
+#define ELP20_SIZE	188		/* Planetary perturbations. Table 2 Latitude/t */
+#define ELP21_SIZE	169		/* Planetary perturbations. Table 2 Distance/t */
+#define ELP22_SIZE	3		/* Tidal effects. Longitude */
+#define ELP23_SIZE	2		/* Tidal effects. Latitude */
+#define ELP24_SIZE	2		/* Tidal effects. Distance */
+#define ELP25_SIZE	6		/* Tidal effects. Longitude/t */
+#define ELP26_SIZE	4		/* Tidal effects. Latitude/t */
+#define ELP27_SIZE	5		/* Tidal effects. Distance/t */
+#define ELP28_SIZE	20		/* Moon figure perturbations. Longitude */
+#define ELP29_SIZE	12		/* Moon figure perturbations. Latitude */
+#define ELP30_SIZE	14		/* Moon figure perturbations. Distance */
+#define ELP31_SIZE	11		/* Relativistic perturbations. Longitude */
+#define ELP32_SIZE	4		/* Relativistic perturbations. Latitude */
+#define ELP33_SIZE	10		/* Relativistic perturbations. Distance */
+#define ELP34_SIZE	28		/* Planetary perturbations - solar eccentricity. Longitude/t2 */
+#define ELP35_SIZE	13		/* Planetary perturbations - solar eccentricity. Latitude/t2 */
+#define ELP36_SIZE	19		/* Planetary perturbations - solar eccentricity. Distance/t2 */
 
 
 /* Chapront theory lunar constants */

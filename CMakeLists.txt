@@ -5,7 +5,7 @@ project(libnova)
 # define the name of the library
 set(LIBRARY_NAME libnova)
 
-option(BUILD_SHARED_LIBRARY "Set to ON to build libnova as a shared library." ON)
+option(BUILD_SHARED_LIBRARY "Set to ON to build libnova as a shared library." OFF)
 if(BUILD_SHARED_LIBRARY)
     set(BUILD_SHARED_LIBS TRUE)
     add_definitions(-DLIBNOVA_SHARED)
